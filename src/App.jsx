@@ -7,13 +7,16 @@ export default function App() {
   const ref = useRef(null)
   const [playing, setPlaying] = useState(false);
   const [played, setPlayed] = useState(0);
-  const [videoDuration, setVideoDuration] = useState(20);
+  const [videoDuration, setVideoDuration] = useState(10);
   const [youtubeVideoUrl, setYoutubeVideoUrl] = useState('');
   const [inputString, setInputString] = useState('');
   const [videoTitle, setVideoTitle] = useState('');
   const [divH1, setDivH1] = useState('');
   const [show, setShow] = useState(false);
+  const [thumbnail, setThumbnail] = useState('');
   const apiKey = 'AIzaSyCuZ9KpPcQs1Oq8ntiNadJdrFX61krPJFI';
+
+  console.log(thumbnail)
 
   const handleSetVideoDuration = () => {
     const video = ref.current;
@@ -26,13 +29,14 @@ export default function App() {
       .then(
         (result) => {
           setVideoTitle(result.items[0].snippet.title);
+          setThumbnail(result.items[0].snippet.thumbnails.standard.url)
         }
       )
   }
 
   const handleProgress = (e) => {
     setPlayed(e.playedSeconds);
-    if (e.playedSeconds >= videoDuration - 20) {
+    if (e.playedSeconds >= videoDuration - 10) {
       setPlaying(false)
       setShow(true)
       setDivH1('End')
@@ -89,7 +93,7 @@ export default function App() {
         <h1>Title:{videoTitle}</h1>
         <div className="video-box">
           <div className="player-wrapper">
-            {show && <div className="fill">{divH1}</div>}
+            {show && <div className="fill"><img src={thumbnail} width={500} height={300} /></div>}
             <ReactPlayer
               ref={ref}
               url={youtubeVideoUrl}
@@ -116,8 +120,8 @@ export default function App() {
           </div>
           <div className="video-controllers" >
             <ProgressBarNumbers seconds={played} />
-            <input type='range' value={played} onChange={handleProgressBarChange} min={0} max={videoDuration - 20} />
-            <ProgressBarNumbers seconds={videoDuration - 20} />
+            <input type='range' value={played} onChange={handleProgressBarChange} min={0} max={videoDuration - 10} />
+            <ProgressBarNumbers seconds={videoDuration - 10} />
             <button onClick={handlePlay}><strong>Play</strong></button>
             <button onClick={handlePause}><strong>Pause</strong></button>
           </div>
